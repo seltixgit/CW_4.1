@@ -1,3 +1,4 @@
+from typing import List
 import requests
 from abc import ABC, abstractmethod
 
@@ -8,7 +9,7 @@ class VacanciesAPIClient(ABC):
     """
 
     @abstractmethod
-    def getting_vacancies(self, keyword):
+    def getting_vacancies(self, keyword: str) -> List[dict]:
         pass
 
 
@@ -17,7 +18,7 @@ class HeadHunterRuAPI(VacanciesAPIClient):
     Получает вакансии по ключевому слову
     """
 
-    def getting_vacancies(self, keyword):
+    def getting_vacancies(self, keyword: str) -> List[dict]:
         """
         Получает вакансии по ключевому слову из API
         :param keyword: Ключевое слово для поиска вакансий

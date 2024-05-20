@@ -1,9 +1,10 @@
 import json
 from src.class_api import HeadHunterRuAPI
 from src.class_vacancies import Vacancy
+from typing import Optional, List
 
 
-def get_value(dictionary, *keys):
+def get_value(dictionary: dict, *keys: str) -> Optional[dict]:
     """
     Возвращает значение из словаря по заданному пути ключей
     :param dictionary: словарь, из которого мы получаем значение
@@ -18,7 +19,7 @@ def get_value(dictionary, *keys):
     return dictionary
 
 
-def user_interaction():
+def user_interaction() -> None:
     print('''Привет! С помощью этого приложения поиск вакансий на hh.ru станет намного проще.
           Рекомендаций:
           Количество вакансий указывать только цифрами, иначе будут выданы все найденные по имени вакансии,
@@ -26,8 +27,8 @@ def user_interaction():
           Если не будет найдено ни одного совпадения по ключевым словам,
           то программа выдаст количество вакансий, указанных в следующем вводе.
           ''')
-    name_vacancy = input('Введите название вакансии: ')
-    keyword_vacancy = input('Введите ключевые слова для фильтрации вакансий: ').split()
+    name_vacancy: str = input('Введите название вакансии: ')
+    keyword_vacancy: List[str] = input('Введите ключевые слова для фильтрации вакансий: ').split()
 
     try:
         top_n = int(input('Введите количество вакансий для отображения по убыванию зарплаты: '))
@@ -49,7 +50,7 @@ def user_interaction():
         print(f"Всего количество вакансий по запросу '{name_vacancy}': {len(all_vacancy)}")
         print(f"Топ {top_n or len(all_vacancy)} вакансий по зарплате:")
 
-        good_vacancy = []
+        good_vacancy: List[Vacancy] = []
         top_n_vacancy = top_n or len(all_vacancy)
 
         if not keyword_vacancy:
@@ -59,13 +60,13 @@ def user_interaction():
 
         for vacancy in selected_vacancy:
             try:
-                name = get_value(vacancy, 'name')
-                area = get_value(vacancy, 'area', 'name')
-                salary_from = get_value(vacancy, 'salary', 'from')
-                salary_to = get_value(vacancy, 'salary', 'to')
-                salary_currency = get_value(vacancy, 'salary', 'currency')
-                requirement = get_value(vacancy, 'snippet', 'requirement')
-                alternate_url = get_value(vacancy, 'alternate_url')
+                name: str = get_value(vacancy, 'name') or ''
+                area: str = get_value(vacancy, 'area', 'name') or ''
+                salary_from: Optional[int] = get_value(vacancy, 'salary', 'from')
+                salary_to: Optional[int] = get_value(vacancy, 'salary', 'to')
+                salary_currency: str = get_value(vacancy, 'salary', 'currency') or ''
+                requirement: str = get_value(vacancy, 'snippet', 'requirement') or ''
+                alternate_url: str = get_value(vacancy, 'alternate_url') or ''
                 if not keyword_vacancy or any(keyword.lower() in str(vacancy).lower() for keyword in keyword_vacancy):
                     good_vacancy.append(
                         Vacancy(name, area, salary_from, salary_to, salary_currency, requirement, alternate_url))
